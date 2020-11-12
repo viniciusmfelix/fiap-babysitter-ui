@@ -10,6 +10,7 @@ import { AcaoComponent } from './acao.component';
 
 import { AcaoService } from './service/acao.service';
 import { MessageService } from 'primeng/api';
+import { ExecucaoService } from '../execucao/service/execucao.service';
 
 @NgModule({
   declarations: [
@@ -28,6 +29,7 @@ import { MessageService } from 'primeng/api';
   ],
   providers: [
     AcaoService,
+    ExecucaoService,
     MessageService
   ],
 })

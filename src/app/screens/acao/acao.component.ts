@@ -1,10 +1,12 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { MessageService } from 'primeng/api';
-import { Table } from 'primeng/table';
+
 import { IAcao } from './model/IAcao';
+import { IExecucao } from './../execucao/model/IExecucao';
 
 import { AcaoService } from './service/acao.service';
+import { ExecucaoService } from '../execucao/service/execucao.service';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-acao',
@@ -21,6 +23,8 @@ export class AcaoComponent implements OnInit {
 
   @ViewChild('modalDelecao', { static: true }) modalDelecao: NgbModal;
 
+  @ViewChild('modalExecucao', { static: true }) modalExecucao: NgbModal;
+
   acoes: IAcao[];
 
   acao: IAcao;
@@ -29,7 +33,8 @@ export class AcaoComponent implements OnInit {
 
   inputSwitch: boolean;
 
-  constructor(private acaoService: AcaoService, private ngbModal: NgbModal, private messageService: MessageService) { }
+  constructor(private acaoService: AcaoService, private ngbModal: NgbModal, private messageService: MessageService,
+              private execucaoService: ExecucaoService) { }
 
   async ngOnInit(): Promise<void> {
     await this.fetchAcoes();
@@ -107,6 +112,25 @@ export class AcaoComponent implements OnInit {
           if (result !== ModalDismissReasons.ESC && result !== ModalDismissReasons.BACKDROP_CLICK) {
             if (result === 'Save click') {
               this.cadastrarAcao(this.acao);
+            }
+          }
+        }
+      ).finally(() => {
+          this.fetchAcoes();
+          this.ngbModal.dismissAll();
+        }
+      );
+  }
+
+
+  onExecutarAcaoClicked(acao) {
+    this.acao = acao;
+    this.editMode = true;
+    this.ngbModal.open(this.modalExecucao,  {ariaLabelledBy: 'modal-basic-title'})
+      .result.then(result => {
+          if (result !== ModalDismissReasons.ESC && result !== ModalDismissReasons.BACKDROP_CLICK) {
+            if (result === 'Save click') {
+              this.executarAcao(acao);
             }
           }
         }
@@ -231,6 +255,51 @@ export class AcaoComponent implements OnInit {
       this.messageService.addAll(failedConstraintsMessage);
     }
   );
+  }
+
+  async executarAcao(acao) {
+
+    const execucao: IExecucao = {
+      acao: {
+        id: acao.id,
+      },
+    };
+
+    await this.execucaoService.store(execucao).toPromise().then(response => {
+        const successMessage = {
+          severity: 'success',
+          summary: 'Sucesso',
+          detail: 'Ação executada!'
+        };
+        this.messageService.add(successMessage);
+      }
+    ).catch(err => {
+      const failedConstraintsMessage: any[] = [];
+
+      if (err.error.campos !== undefined) {
+        err.error.campos.forEach(campo => {
+            const failedConstraintMessage = {
+              severity: 'error',
+              summary: 'Erro',
+              detail: campo.mensagem,
+              sticky: true,
+            };
+            failedConstraintsMessage.push(failedConstraintMessage);
+          }
+        );
+      }
+
+      const failMessage = {
+        severity: 'error',
+        summary: 'Erro',
+        detail: err.error.detalhes,
+        sticky: true,
+      };
+
+      failedConstraintsMessage.push(failMessage);
+      this.messageService.addAll(failedConstraintsMessage);
+      }
+    );
   }
 
 }
