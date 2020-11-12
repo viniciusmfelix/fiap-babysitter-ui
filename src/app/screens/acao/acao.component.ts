@@ -181,6 +181,7 @@ export class AcaoComponent implements OnInit {
 
   async cadastrarAcao(acao) {
     await this.acaoService.store(acao).toPromise().then(response => {
+        this.acoes.push(response);
         const successMessage = {
           severity: 'success',
           summary: 'Sucesso',
@@ -220,6 +221,8 @@ export class AcaoComponent implements OnInit {
 
   async removerAcao(acao) {
     await this.acaoService.destroy(acao.id).toPromise().then(response => {
+      const acaoIndex = this.acoes.findIndex(act => act.id === acao.id);
+      this.acoes.splice(acaoIndex, 1);
       const successMessage = {
         severity: 'success',
         summary: 'Sucesso',
