@@ -1,1 +1,43 @@
-<p>acao works!</p>
+
+<div class="table-header">
+  <h2>Ações</h2>
+  <button class="btn btn-primary"><i class="pi pi-fw pi-plus" style="margin-right: 10px;"></i>Cadastrar nova ação</button>
+</div>
+<p-toast position="top-right"></p-toast>
+<p-table [value]="acoes" styleClass="p-datatable-striped">
+  <ng-template pTemplate="header">
+    <tr>
+      <th style="width: 100px; text-align: center;" align="center">Id</th>
+      <th style="text-align: center;">Nome</th>
+      <th style="text-align: center;">Descrição</th>
+      <th style="text-align: center;">Ativo</th>
+      <th></th>
+      <th></th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-acao>
+    <tr>
+      <td style="text-align: center;">{{acao.id}}</td>
+      <td>{{acao.nome}}</td>
+      <td>{{acao.descricao}}</td>
+      <td style="text-align: center;"><button [ngClass]="acao.ativo == true ? 'btn btn-primary' : 'btn btn-danger'" (click)="onAtivoClicked(acao)">{{acao.ativo === true ? 'Sim': 'Não'}}</button></td>
+      <td style="text-align: center;"><button class="btn btn-info"><i class="pi pi-fw pi-refresh" style="margin-right: 10px;"></i>Executar</button></td>
+      <td style="text-align: center;"><button class="btn btn-danger"><i class="pi pi-fw pi-trash"></i></button></td>
+    </tr>
+  </ng-template>
+</p-table>
+<ng-template #modalConfirmacao let-c="close">
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Ativar ação</h4>
+    <button type="button" class="close" aria-label="Close" (click)="c('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>Deseja mesmo ativar esta ação?</p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-success" (click)="c('Save click')"><i class="pi pi-check-square" style="margin-right: 10px;"></i>Ativar ação</button>
+    <button type="button" class="btn btn-danger" (click)="c('Cancel click')"><i class="pi pi-check-square" style="margin-right: 10px;"></i>Cancelar</button>
+  </div>
+</ng-template>

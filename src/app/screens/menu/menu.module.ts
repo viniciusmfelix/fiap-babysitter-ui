@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
+import { RouterModule } from '@angular/router';
 import {TabMenuModule} from 'primeng/tabmenu';
 
 import { MenuComponent } from './menu.component';
@@ -10,6 +11,7 @@ import { MenuComponent } from './menu.component';
   ],
   imports: [
     CommonModule,
+    RouterModule,
     TabMenuModule,
   ],
   exports: [

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 
 @Component({
@@ -8,21 +9,27 @@ import { MenuItem } from 'primeng/api';
 })
 export class MenuComponent implements OnInit {
 
-  constructor() { }
-
   itens: MenuItem[];
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.itens = [
       {
         label: 'Ações',
         icon: 'pi pi-fw pi-cog',
+        command: () => {
+          this.router.navigateByUrl('/acoes');
+        },
       },
       {
         label: 'Execuções',
         icon: 'pi pi-fw pi-refresh',
+        command: () => {
+          this.router.navigateByUrl('/execucoes');
+        },
       },
     ];
   }
+
+  constructor(private router: Router) { }
 
 }
