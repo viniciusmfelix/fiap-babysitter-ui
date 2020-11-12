@@ -14,7 +14,15 @@ export class AcaoComponent implements OnInit {
 
   @ViewChild('modalConfirmacao', { static: true }) modalConfirmacao: NgbModal;
 
+  @ViewChild('modalForm', { static: true }) modalForm: NgbModal;
+
   acoes: IAcao[];
+
+  acao: IAcao;
+
+  editMode: boolean;
+
+  inputSwitch: boolean;
 
   constructor(private acaoService: AcaoService, private ngbModal: NgbModal, private messageService: MessageService) { }
 
@@ -35,6 +43,23 @@ export class AcaoComponent implements OnInit {
           if (result !== ModalDismissReasons.ESC && result !== ModalDismissReasons.BACKDROP_CLICK) {
             if (result === 'Save click') {
               acao.ativo = !acao.ativo;
+              this.atualizarAcao(acao);
+            }
+          }
+        }
+      ).finally(() => {
+          this.ngbModal.dismissAll();
+        }
+      );
+  }
+
+  onEdicaoClicked(acao) {
+    this.acao = acao;
+    this.editMode = true;
+    this.ngbModal.open(this.modalForm,  {ariaLabelledBy: 'modal-basic-title'})
+      .result.then(result => {
+          if (result !== ModalDismissReasons.ESC && result !== ModalDismissReasons.BACKDROP_CLICK) {
+            if (result === 'Save click') {
               this.atualizarAcao(acao);
             }
           }

@@ -1,8 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
 import { TableModule } from 'primeng/table';
-import { ToastModule } from 'primeng/toast';
+import { TooltipModule } from 'primeng/tooltip';
+import { InputSwitchModule } from 'primeng/inputswitch';
 
 import { AcaoComponent } from './acao.component';
 
@@ -16,8 +18,10 @@ import { MessageService } from 'primeng/api';
   imports: [
     CommonModule,
     HttpClientModule,
+    FormsModule,
     TableModule,
-    ToastModule,
+    TooltipModule,
+    InputSwitchModule,
   ],
   exports: [
     AcaoComponent,
