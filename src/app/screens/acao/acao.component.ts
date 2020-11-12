@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { MessageService } from 'primeng/api';
+import { Table } from 'primeng/table';
 import { IAcao } from './model/IAcao';
 
 import { AcaoService } from './service/acao.service';
@@ -14,7 +15,9 @@ export class AcaoComponent implements OnInit {
 
   @ViewChild('modalConfirmacao', { static: true }) modalConfirmacao: NgbModal;
 
-  @ViewChild('modalForm', { static: true }) modalForm: NgbModal;
+  @ViewChild('modalEdicao', { static: true }) modalEdicao: NgbModal;
+
+  @ViewChild('modalCadastro', { static: true }) modalCadastro: NgbModal;
 
   acoes: IAcao[];
 
@@ -38,6 +41,7 @@ export class AcaoComponent implements OnInit {
   }
 
   onAtivoClicked(acao) {
+    this.acao = acao;
     this.ngbModal.open(this.modalConfirmacao,  {ariaLabelledBy: 'modal-basic-title'})
       .result.then(result => {
           if (result !== ModalDismissReasons.ESC && result !== ModalDismissReasons.BACKDROP_CLICK) {
@@ -56,7 +60,7 @@ export class AcaoComponent implements OnInit {
   onEdicaoClicked(acao) {
     this.acao = acao;
     this.editMode = true;
-    this.ngbModal.open(this.modalForm,  {ariaLabelledBy: 'modal-basic-title'})
+    this.ngbModal.open(this.modalEdicao,  {ariaLabelledBy: 'modal-basic-title'})
       .result.then(result => {
           if (result !== ModalDismissReasons.ESC && result !== ModalDismissReasons.BACKDROP_CLICK) {
             if (result === 'Save click') {
@@ -65,6 +69,29 @@ export class AcaoComponent implements OnInit {
           }
         }
       ).finally(() => {
+          this.fetchAcoes();
+          this.ngbModal.dismissAll();
+        }
+      );
+  }
+
+  onCadastroClicked() {
+    this.acao = {
+      nome: null,
+      descricao: null,
+      ativo: false,
+    };
+
+    this.ngbModal.open(this.modalCadastro,  {ariaLabelledBy: 'modal-basic-title'})
+      .result.then(result => {
+          if (result !== ModalDismissReasons.ESC && result !== ModalDismissReasons.BACKDROP_CLICK) {
+            if (result === 'Save click') {
+              this.cadastrarAcao(this.acao);
+            }
+          }
+        }
+      ).finally(() => {
+          this.fetchAcoes();
           this.ngbModal.dismissAll();
         }
       );
@@ -80,12 +107,69 @@ export class AcaoComponent implements OnInit {
         this.messageService.add(successMessage);
       }
     ).catch(err => {
+      const failedConstraintsMessage: any[] = [];
+
+      if (err.error.campos !== undefined) {
+        err.error.campos.forEach(campo => {
+            const failedConstraintMessage = {
+              severity: 'error',
+              summary: 'Erro',
+              detail: campo.mensagem,
+              sticky: true,
+            };
+            failedConstraintsMessage.push(failedConstraintMessage);
+          }
+        );
+      }
+
+      const failMessage = {
+        severity: 'error',
+        summary: 'Erro',
+        detail: err.error.detalhes,
+        sticky: true,
+      };
+
+      failedConstraintsMessage.push(failMessage);
+      this.messageService.addAll(failedConstraintsMessage);
+      }
+    );
+  }
+
+  async cadastrarAcao(acao) {
+    await this.acaoService.store(acao).toPromise().then(response => {
+        const successMessage = {
+          severity: 'success',
+          summary: 'Sucesso',
+          detail: 'Ação atualizada!'
+        };
+        this.messageService.add(successMessage);
+      }
+    ).catch(err => {
+
+        const failedConstraintsMessage: any[] = [];
+
+        if (err.error.campos !== undefined) {
+          err.error.campos.forEach(campo => {
+              const failedConstraintMessage = {
+                severity: 'error',
+                summary: 'Erro',
+                detail: campo.mensagem,
+                sticky: true,
+              };
+              failedConstraintsMessage.push(failedConstraintMessage);
+            }
+          );
+        }
+
         const failMessage = {
           severity: 'error',
           summary: 'Erro',
           detail: err.error.detalhes,
+          sticky: true,
         };
-        this.messageService.add(failMessage);
+
+        failedConstraintsMessage.push(failMessage);
+        this.messageService.addAll(failedConstraintsMessage);
       }
     );
   }
