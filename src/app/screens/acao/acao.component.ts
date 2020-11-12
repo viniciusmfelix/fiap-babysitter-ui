@@ -19,6 +19,8 @@ export class AcaoComponent implements OnInit {
 
   @ViewChild('modalCadastro', { static: true }) modalCadastro: NgbModal;
 
+  @ViewChild('modalDelecao', { static: true }) modalDelecao: NgbModal;
+
   acoes: IAcao[];
 
   acao: IAcao;
@@ -65,6 +67,24 @@ export class AcaoComponent implements OnInit {
           if (result !== ModalDismissReasons.ESC && result !== ModalDismissReasons.BACKDROP_CLICK) {
             if (result === 'Save click') {
               this.atualizarAcao(acao);
+            }
+          }
+        }
+      ).finally(() => {
+          this.fetchAcoes();
+          this.ngbModal.dismissAll();
+        }
+      );
+  }
+
+  onRemocaoClicked(acao) {
+    this.acao = acao;
+    this.editMode = true;
+    this.ngbModal.open(this.modalDelecao,  {ariaLabelledBy: 'modal-basic-title'})
+      .result.then(result => {
+          if (result !== ModalDismissReasons.ESC && result !== ModalDismissReasons.BACKDROP_CLICK) {
+            if (result === 'Save click') {
+              this.removerAcao(acao);
             }
           }
         }
@@ -140,7 +160,7 @@ export class AcaoComponent implements OnInit {
         const successMessage = {
           severity: 'success',
           summary: 'Sucesso',
-          detail: 'Ação atualizada!'
+          detail: 'Ação cadastrada!'
         };
         this.messageService.add(successMessage);
       }
@@ -172,6 +192,45 @@ export class AcaoComponent implements OnInit {
         this.messageService.addAll(failedConstraintsMessage);
       }
     );
+  }
+
+  async removerAcao(acao) {
+    await this.acaoService.destroy(acao.id).toPromise().then(response => {
+      const successMessage = {
+        severity: 'success',
+        summary: 'Sucesso',
+        detail: 'Ação removida!'
+      };
+      this.messageService.add(successMessage);
+    }
+  ).catch(err => {
+
+      const failedConstraintsMessage: any[] = [];
+
+      if (err.error.campos !== undefined) {
+        err.error.campos.forEach(campo => {
+            const failedConstraintMessage = {
+              severity: 'error',
+              summary: 'Erro',
+              detail: campo.mensagem,
+              sticky: true,
+            };
+            failedConstraintsMessage.push(failedConstraintMessage);
+          }
+        );
+      }
+
+      const failMessage = {
+        severity: 'error',
+        summary: 'Erro',
+        detail: err.error.detalhes,
+        sticky: true,
+      };
+
+      failedConstraintsMessage.push(failMessage);
+      this.messageService.addAll(failedConstraintsMessage);
+    }
+  );
   }
 
 }

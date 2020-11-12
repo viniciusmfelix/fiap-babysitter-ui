@@ -24,10 +24,11 @@
       <td style="text-align: center;"><button [ngClass]="acao.ativo == true ? 'btn btn-primary mr-2' : 'btn btn-danger mr-2'" (click)="onAtivoClicked(acao)" pTooltip="Ativar/Desativar ação" tooltipPosition="top">{{acao.ativo === true ? 'Sim': 'Não'}}</button></td>
       <td style="text-align: center;"><button class="btn btn-secondary mr-2" (click)="onEdicaoClicked(acao)" pTooltip="Editar" tooltipPosition="top"><i class="pi pi-fw pi-pencil"></i></button></td>
       <td style="text-align: center;"><button class="btn btn-link mr-2" pTooltip="Executar ação" tooltipPosition="top"><i class="pi pi-fw pi-refresh" style="margin-right: 10px;"></i>Executar</button></td>
-      <td style="text-align: center;"><button class="btn btn-warning mr-2" pTooltip="Deletar ação" tooltipPosition="top"><i class="pi pi-fw pi-trash"></i></button></td>
+      <td style="text-align: center;"><button class="btn btn-warning mr-2" (click)="onRemocaoClicked(acao) "pTooltip="Deletar ação" tooltipPosition="top"><i class="pi pi-fw pi-trash"></i></button></td>
     </tr>
   </ng-template>
 </p-table>
+
 <ng-template #modalConfirmacao let-c="close">
   <div class="modal-header">
     <h4 class="modal-title" id="modal-basic-title">{{ acao.ativo === false ? 'Ativar' : 'Desativar'}} ação</h4>
@@ -36,13 +37,30 @@
     </button>
   </div>
   <div class="modal-body">
-    <p>Deseja mesmo {{ acao.ativo === false ? 'ativar' : 'desativar'}} esta ação?</p>
+    <p>Deseja mesmo {{ acao.ativo === false ? 'ativar' : 'desativar'}} a ação de {{acao.nome}}?</p>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-success" (click)="c('Save click')"><i class="pi pi-check-square" style="margin-right: 10px;"></i>Ativar ação</button>
+    <button type="button" class="btn btn-success" (click)="c('Save click')"><i class="pi pi-check-square" style="margin-right: 10px;"></i>{{ acao.ativo === false ? 'Ativar' : 'Desativar'}} ação</button>
     <button type="button" class="btn btn-danger" (click)="c('Cancel click')"><i class="pi pi-times" style="margin-right: 10px;"></i>Cancelar</button>
   </div>
 </ng-template>
+
+<ng-template #modalDelecao let-c="close">
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Remover ação</h4>
+    <button type="button" class="close" aria-label="Close" (click)="c('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>Deseja mesmo remover a ação de {{acao.nome}}?</p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-warning" (click)="c('Save click')"><i class="pi pi-info" style="margin-right: 10px;"></i>Remover ação</button>
+    <button type="button" class="btn btn-danger" (click)="c('Cancel click')"><i class="pi pi-times" style="margin-right: 10px;"></i>Cancelar</button>
+  </div>
+</ng-template>
+
 <ng-template #modalEdicao let-c="close">
   <div class="modal-header">
     <h4 class="modal-title" id="modal-basic-title">Editar ação</h4>
@@ -86,6 +104,7 @@
     <button type="button" class="btn btn-danger" (click)="c('Cancel click')"><i class="pi pi-times" style="margin-right: 10px;"></i>Cancelar</button>
   </div>
 </ng-template>
+
 <ng-template #modalCadastro let-c="close">
   <div class="modal-header">
     <h4 class="modal-title" id="modal-basic-title">Editar ação</h4>
