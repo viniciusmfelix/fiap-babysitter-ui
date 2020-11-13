@@ -1,7 +1,12 @@
 export interface IExecucao {
   id?: number;
-  data?: Date;
+  dataExecucao?: Date;
   acao: {
-    id: number
+    id: number;
+    nome?: string;
+    descricao?: string;
+    ativo?: boolean;
   };
+  data?: string;
+  hora?: string;
 }

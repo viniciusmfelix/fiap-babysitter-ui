@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { TableModule } from 'primeng/table';
 import { TooltipModule } from 'primeng/tooltip';
 import { InputSwitchModule } from 'primeng/inputswitch';
+import { ProgressBarModule } from 'primeng/progressbar';
 
 import { AcaoComponent } from './acao.component';
 
@@ -23,6 +24,7 @@ import { ExecucaoService } from '../execucao/service/execucao.service';
     TableModule,
     TooltipModule,
     InputSwitchModule,
+    ProgressBarModule,
   ],
   exports: [
     AcaoComponent,

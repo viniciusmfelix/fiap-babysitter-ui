@@ -33,6 +33,8 @@ export class AcaoComponent implements OnInit {
 
   inputSwitch: boolean;
 
+  loading: boolean;
+
   constructor(private acaoService: AcaoService, private ngbModal: NgbModal, private messageService: MessageService,
               private execucaoService: ExecucaoService) { }
 
@@ -41,10 +43,14 @@ export class AcaoComponent implements OnInit {
   }
 
   async fetchAcoes(): Promise<void> {
-    await this.acaoService.index().toPromise().then(acoes => {
+    this.loading = true;
+    setTimeout(() => {
+      this.acaoService.index().toPromise().then(acoes => {
         this.acoes = acoes;
+        this.loading = false;
       }
     );
+    }, 3500);
   }
 
   onAtivoClicked(acao) {

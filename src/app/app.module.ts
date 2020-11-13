@@ -11,6 +11,7 @@ import { ToastModule } from 'primeng/toast';
 import { MenuModule } from './screens/menu/menu.module';
 import { AcaoModule } from './screens/acao/acao.module';
 import { ExecucaoModule } from './screens/execucao/execucao.module';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,7 @@ import { ExecucaoModule } from './screens/execucao/execucao.module';
     AcaoModule,
     ExecucaoModule,
     AppRoutingModule,
+    FontAwesomeModule,
   ],
   providers: [NgbTooltipConfig],
   bootstrap: [AppComponent]

@@ -1,1 +1,160 @@
-<p>execucao works!</p>
+
+<div class="table-header">
+  <h2>Execuções</h2>
+</div>
+
+<p-table #dataTable [(value)]="execucoes" styleClass="p-datatable-striped">
+  <ng-template pTemplate="header">
+    <tr>
+      <th style="width: 40px; text-align: center;" align="center">Id</th>
+      <th style="text-align: center;">Data</th>
+      <th style="text-align: center;">Hora</th>
+      <th style="text-align: center;">Ação</th>
+      <th></th>
+      <th></th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-execucao>
+    <tr>
+      <td style="text-align: center;">{{execucao.id}}</td>
+      <td style="text-align: center;">{{execucao.data}}</td>
+      <td style="text-align: center;">{{execucao.hora}}</td>
+      <td>{{execucao.acao.nome}}</td>
+      <td style="text-align: center;"><button class="btn btn-primary" pTooltip="Inspecionar execução" tooltipPosition="top"><i class="pi pi-fw pi-search"></i></button></td>
+      <td style="text-align: center;"><button class="btn btn-warning mr-2" pTooltip="Deletar ação" tooltipPosition="top"><i class="pi pi-fw pi-trash"></i></button></td>
+    </tr>
+  </ng-template>
+</p-table>
+<div class="loader">
+  <p-progressBar *ngIf="loading" mode="indeterminate"></p-progressBar>
+</div>
+<div style="margin-bottom: 100px;"></div>
+
+<!-- <ng-template #modalConfirmacao let-c="close">
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">{{ acao.ativo === false ? 'Ativar' : 'Desativar'}} ação</h4>
+    <button type="button" class="close" aria-label="Close" (click)="c('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>Deseja mesmo {{ acao.ativo === false ? 'ativar' : 'desativar'}} a ação de {{acao.nome}}?</p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-success" (click)="c('Save click')"><i class="pi pi-check-square" style="margin-right: 10px;"></i>{{ acao.ativo === false ? 'Ativar' : 'Desativar'}} ação</button>
+    <button type="button" class="btn btn-danger" (click)="c('Cancel click')"><i class="pi pi-times" style="margin-right: 10px;"></i>Cancelar</button>
+  </div>
+</ng-template>
+
+<ng-template #modalExecucao let-c="close">
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Executar ação</h4>
+    <button type="button" class="close" aria-label="Close" (click)="c('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>Deseja mesmo executar a ação de {{acao.nome}} <strong>agora</strong>?</p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-success" (click)="c('Save click')"><i class="pi pi-check-square" style="margin-right: 10px;"></i>Executar ação</button>
+    <button type="button" class="btn btn-danger" (click)="c('Cancel click')"><i class="pi pi-times" style="margin-right: 10px;"></i>Cancelar</button>
+  </div>
+</ng-template>
+
+<ng-template #modalDelecao let-c="close">
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Remover ação</h4>
+    <button type="button" class="close" aria-label="Close" (click)="c('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>Deseja mesmo remover a ação de {{acao.nome}}?</p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-warning" (click)="c('Save click')"><i class="pi pi-info" style="margin-right: 10px;"></i>Remover ação</button>
+    <button type="button" class="btn btn-danger" (click)="c('Cancel click')"><i class="pi pi-times" style="margin-right: 10px;"></i>Cancelar</button>
+  </div>
+</ng-template>
+
+<ng-template #modalEdicao let-c="close">
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Editar ação</h4>
+    <button type="button" class="close" aria-label="Close" (click)="c('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form>
+      <div class="form-group">
+        <label>Id:</label>
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1"><i class="pi pi-tag"></i></span>
+          </div>
+          <input type="text" id="id" name="id" [(ngModel)]="acao.id" class="form-control" placeholder="Nome da ação" [disabled]="editMode" aria-label="acao" aria-describedby="basic-addon1">
+        </div>
+        <label>Nome:</label>
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1"><i class="pi pi-bookmark"></i></span>
+          </div>
+          <input type="text" id="nome" name="nome" [(ngModel)]="acao.nome" class="form-control" placeholder="Nome da ação" aria-label="acao" aria-describedby="basic-addon1">
+        </div>
+        <label>Descrição:</label>
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text"><i class="pi pi-file-o"></i></span>
+          </div>
+          <textarea class="form-control"name="descricao" id="descricao" [(ngModel)]="acao.descricao" aria-label="With textarea"></textarea>
+        </div>
+        <label style="margin-top: 20px">Ativo:</label>
+        <div class="input-group">
+          <p-inputSwitch [(ngModel)]="acao.ativo" name="ativo"></p-inputSwitch>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-success" (click)="c('Save click')"><i class="pi pi-check-square" style="margin-right: 10px;"></i>Salvar edição</button>
+    <button type="button" class="btn btn-danger" (click)="c('Cancel click')"><i class="pi pi-times" style="margin-right: 10px;"></i>Cancelar</button>
+  </div>
+</ng-template>
+
+<ng-template #modalCadastro let-c="close">
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Editar ação</h4>
+    <button type="button" class="close" aria-label="Close" (click)="c('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form>
+      <div class="form-group">
+        <label>Nome:</label>
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1"><i class="pi pi-bookmark"></i></span>
+          </div>
+          <input type="text" id="nome" name="nome" [(ngModel)]="acao.nome" class="form-control" placeholder="Nome da ação" aria-label="acao" aria-describedby="basic-addon1">
+        </div>
+        <label>Descrição:</label>
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text"><i class="pi pi-file-o"></i></span>
+          </div>
+          <textarea class="form-control"name="descricao" id="descricao" [(ngModel)]="acao.descricao" aria-label="With textarea"></textarea>
+        </div>
+        <label style="margin-top: 20px">Ativo:</label>
+        <div class="input-group">
+          <p-inputSwitch [(ngModel)]="acao.ativo" name="ativo"></p-inputSwitch>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-success" (click)="c('Save click')"><i class="pi pi-check-square" style="margin-right: 10px;"></i>Salvar nova ação</button>
+    <button type="button" class="btn btn-danger" (click)="c('Cancel click')"><i class="pi pi-times" style="margin-right: 10px;"></i>Cancelar</button>
+  </div>
+</ng-template> -->
