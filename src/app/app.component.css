@@ -4,12 +4,14 @@ header {
   background-color: #1976d2;
   margin-bottom: 50px;
 }
-
 .inner-header {
-  width: 1650px;
+  width: 90%;
   height: 100%;
   margin: 0 auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+.router-wrapper {
+  width: 70%;
 }

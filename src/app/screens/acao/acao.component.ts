@@ -50,7 +50,7 @@ export class AcaoComponent implements OnInit {
         this.loading = false;
       }
     );
-    }, 3500);
+    }, 2500);
   }
 
   onAtivoClicked(acao) {
@@ -82,7 +82,6 @@ export class AcaoComponent implements OnInit {
           }
         }
       ).finally(() => {
-          this.fetchAcoes();
           this.ngbModal.dismissAll();
         }
       );
@@ -100,7 +99,6 @@ export class AcaoComponent implements OnInit {
           }
         }
       ).finally(() => {
-          this.fetchAcoes();
           this.ngbModal.dismissAll();
         }
       );
@@ -122,7 +120,6 @@ export class AcaoComponent implements OnInit {
           }
         }
       ).finally(() => {
-          this.fetchAcoes();
           this.ngbModal.dismissAll();
         }
       );
@@ -141,7 +138,6 @@ export class AcaoComponent implements OnInit {
           }
         }
       ).finally(() => {
-          this.fetchAcoes();
           this.ngbModal.dismissAll();
         }
       );
